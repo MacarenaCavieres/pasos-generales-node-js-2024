@@ -1,8 +1,13 @@
 import express from "express";
 import { products } from "./products.js";
+import { authMiddleware } from "./middleware/auth.middleware.js";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const __dirname = import.meta.dirname;
+
+app.use(express.static(__dirname + "/public"));
 
 app.get("/", (req, res) => {
     res.send({ msg: "Helloucito" });
@@ -30,6 +35,15 @@ app.get("/azar/:numero", (req, res) => {
     +numero === aleatorio
         ? res.send("<center><h1>Hoy estas de suerte ;)</h1></center>")
         : res.send("<center><h1>Buena suerte para la próxima</h1></center>");
+});
+
+app.get("/estudiar", (req, res) => {
+    res.redirect("https://desafiolatam.com/");
+});
+
+app.get("/tiempo", authMiddleware, (req, res) => {
+    const tiempo = Date.now();
+    res.json({ tiempo: tiempo });
 });
 
 app.use("*", (req, res) => {
